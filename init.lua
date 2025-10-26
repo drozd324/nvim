@@ -18,7 +18,7 @@ vim.opt.rtp:prepend(lazypath)
 -- Make sure to setup `mapleader` and `maplocalleader` before
 -- loading lazy.nvim so that mappings are correct.
 -- This is also a good place to setup other settings (vim.opt)
-vim.g.mapleader = " "
+vim.g.mapleader = "\\"
 vim.g.maplocalleader = "\\"
 
 -- Setup lazy.nvim
@@ -61,7 +61,12 @@ require("lazy").setup({
 				})
 			end
 		},
-
+		--
+		--		{
+		--			"mason-org/mason.nvim",
+		--			opts = {}
+		--		},
+		--
 		{
 			'nvim-telescope/telescope.nvim',
 			tag = '0.1.8',
@@ -71,12 +76,44 @@ require("lazy").setup({
 			},
 		},
 
+		{
+			"folke/lazydev.nvim",
+			ft = "lua", -- only load on lua files
+		},
+
+		{
+			"rcarriga/nvim-dap-ui",
+			dependencies = {
+				"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"
+			}
+		},
+
+		{
+			"mbbill/undotree",
+			vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
+		},
+
+
+		{
+			"sphamba/smear-cursor.nvim",
+			opts = {
+				stiffess = .99,
+				trailing_stifness = .99,
+				distance_stop_animating = .5,
+				damping = .9,
+				never_draw_over_target = true,
+			},
+		},
+
 	},
 
 	-- configure any other settings here. see the documentation for more details.
 	-- automatically check for plugin updates
 	checker = { enabled = true, notify = false },
 })
+
+
+-- to format code write' :lua vim.lsp.buf.format()'
 
 --------------------------------- lsp stuff -------------------------------------------------
 
@@ -97,42 +134,59 @@ vim.lsp.enable('clangd')
 
 
 vim.lsp.config["bash-language-server"] = {
-	cmd = { 'bash-language-server' },
+	cmd = { 'bash-language-server', '--stdio' },
 	--root_markers = { 'compile_commands.json', 'compile_flags.txt' },
 	filetypes = { 'sh', 'bash' },
 }
 vim.lsp.enable('bash-language-server')
 
 
-vim.lsp.config["python-lsp-server"] = {
-  cmd = { 'python-lsp-server', '--background-index' },
-  --root_markers = { 'compile_commands.json', 'compile_flags.txt' },
-  filetypes = { 'py' },
+vim.lsp.config["pyright"] = {
+	cmd = { "pyright-langserver", "--stdio" },
+	filetypes = { "python" },
+	root_markers = { ".git", "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt" },
 }
-vim.lsp.enable('python-lsp-server')
+vim.lsp.enable("pyright")
 
 
 vim.api.nvim_create_autocmd('lspattach', {
 	callback = function(ev)
-		local client = vim.lsp.get_client_by_id(ev.data.client_id)
+		--local client = vim.lsp.get_client_by_id(ev.data.client_id)
 		--    if client:supports_method('textdocument/completion') then
 		--      vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
 		--    end
+
+		-- Keymaps --
+		vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+		vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+		--vim.keymap.set("n", "<leader>gd", vim.lsp.buf.type_definition, opts)
+		vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+		vim.keymap.set("n", "<leader>vws", vim.lsp.buf.workspace_symbol, opts)
+		vim.keymap.set("n", "<leader>fd", function() vim.diagnostic.open_float({ border = "single" }) end, opts)
+		vim.keymap.set("n", "<leader>td", function() toggle_buffer_disgnostics() end, opts)
+		vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format({ async = true }) end,
+			{ buffer = bufnr, desc = "Format file" })
+		vim.keymap.set("n", "[d", vim.diagnostic.goto_next, opts)
+		vim.keymap.set("n", "]d", vim.diagnostic.goto_prev, opts)
+		vim.keymap.set({ 'n', 'v' }, "<leader>ca", vim.lsp.buf.code_action, opts)
+		vim.keymap.set("n", "<leader>ref", vim.lsp.buf.references, opts)
+		vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+		-- vim.keymap.set("i", "Find Appropriate Keymap", vim.lsp.buf.signature_help, opts)
 	end,
 })
-
 ----------------------------------------------------------------------------------
 
 vim.cmd("colorscheme evergarden")
 
----- Toggle these for line number shenanigans
---vim.o.termguicolors = true
---vim.opt.termguicolors = true
---vim.opt.number = true
---vim.opt.relativenumber = true
---vim.cmd [[
---  highlight LineNr guifg=#444444
---]]
+-- Toggle these for line number shenanigans
+vim.o.termguicolors = true
+vim.opt.termguicolors = true
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.cmd [[
+  highlight LineNr guifg=#444444
+]]
 
 vim.o.laststatus = 0
 vim.opt.clipboard = "unnamedplus"
