@@ -1,4 +1,4 @@
--- Bootstrap lazy.nvim -- no idea what is going on here but it make Lazy work
+-- Init lazy
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
@@ -74,25 +74,13 @@ require("lazy").setup({
 				'nvim-lua/plenary.nvim',
 				{ 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' }
 			},
-		},
 
-		{
-			"folke/lazydev.nvim",
-			ft = "lua", -- only load on lua files
-		},
-
-		{
-			"rcarriga/nvim-dap-ui",
-			dependencies = {
-				"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"
-			}
 		},
 
 		{
 			"mbbill/undotree",
 			vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
 		},
-
 
 		{
 			"sphamba/smear-cursor.nvim",
@@ -198,7 +186,21 @@ vim.api.nvim_create_autocmd("FileType", {
 	end
 })
 
+-------------------------- Telescope Keymaps -------------------------------------
+
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
+vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
+vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+
+-- Lsp
+vim.keymap.set('n', '<leader>rf', builtin.lsp_references, {desc = "Telescope show lsp refs"})
+vim.keymap.set('n', '<leader>tds', builtin.lsp_document_symbols, {desc = "Telescope show document symbols"})
+vim.keymap.set('n', '<leader>tws', builtin.lsp_workspace_symbols, {desc = "Telescope show workspace symbols"})
+
 ----------------------------------------------------------------------------------
+
 
 vim.cmd("colorscheme evergarden")
 
