@@ -128,7 +128,7 @@ vim.lsp.enable('lua-language-server')
 vim.lsp.config["clangd"] = {
 	cmd = { 'clangd', '--background-index' },
 	root_markers = { 'compile_commands.json', 'compile_flags.txt' },
-	filetypes = { 'c', 'cpp', 'cu' },
+	filetypes = { 'c', 'cpp', 'cuda' },
 }
 vim.lsp.enable('clangd')
 
@@ -165,8 +165,7 @@ vim.api.nvim_create_autocmd('lspattach', {
 		vim.keymap.set("n", "<leader>vws", vim.lsp.buf.workspace_symbol, opts)
 		vim.keymap.set("n", "<leader>fd", function() vim.diagnostic.open_float({ border = "single" }) end, opts)
 		vim.keymap.set("n", "<leader>td", function() toggle_buffer_disgnostics() end, opts)
-		vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format({ async = true }) end,
-			{ buffer = bufnr, desc = "Format file" })
+		vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format({ async = true }) end, { buffer = bufnr, desc = "Format file" })
 		vim.keymap.set("n", "[d", vim.diagnostic.goto_next, opts)
 		vim.keymap.set("n", "]d", vim.diagnostic.goto_prev, opts)
 		vim.keymap.set({ 'n', 'v' }, "<leader>ca", vim.lsp.buf.code_action, opts)
@@ -199,6 +198,16 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.opt_local.tabstop = 4
 		vim.opt_local.shiftwidth = 4
 		vim.opt_local.softtabstop = 4
+	end
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = {"cpp", "c", "h", "cuda"},
+	callback = function()
+		vim.opt_local.expandtab = true
+		vim.opt_local.tabstop = 2
+		vim.opt_local.shiftwidth = 2
+		vim.opt_local.softtabstop = 2
 	end
 })
 
