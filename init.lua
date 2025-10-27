@@ -21,7 +21,7 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = "\\"
 vim.g.maplocalleader = "\\"
 
--- Setup lazy.nvim
+------------------------------------- Setup lazy.nvim ------------------------------------
 require("lazy").setup({
 	spec = {
 		{
@@ -62,10 +62,10 @@ require("lazy").setup({
 			end
 		},
 		--
-		--		{
-		--			"mason-org/mason.nvim",
-		--			opts = {}
-		--		},
+		--{
+		--	"mason-org/mason.nvim",
+		--	opts = {}
+		--},
 		--
 		{
 			'nvim-telescope/telescope.nvim',
@@ -165,7 +165,8 @@ vim.api.nvim_create_autocmd('lspattach', {
 		vim.keymap.set("n", "<leader>vws", vim.lsp.buf.workspace_symbol, opts)
 		vim.keymap.set("n", "<leader>fd", function() vim.diagnostic.open_float({ border = "single" }) end, opts)
 		vim.keymap.set("n", "<leader>td", function() toggle_buffer_disgnostics() end, opts)
-		vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format({ async = true }) end, { buffer = bufnr, desc = "Format file" })
+		vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format({ async = true }) end,
+			{ buffer = bufnr, desc = "Format file" })
 		vim.keymap.set("n", "[d", vim.diagnostic.goto_next, opts)
 		vim.keymap.set("n", "]d", vim.diagnostic.goto_prev, opts)
 		vim.keymap.set({ 'n', 'v' }, "<leader>ca", vim.lsp.buf.code_action, opts)
@@ -174,23 +175,9 @@ vim.api.nvim_create_autocmd('lspattach', {
 		-- vim.keymap.set("i", "Find Appropriate Keymap", vim.lsp.buf.signature_help, opts)
 	end,
 })
-----------------------------------------------------------------------------------
 
-vim.cmd("colorscheme evergarden")
+------------------------------ File specific indenting ---------------------------
 
--- Toggle these for line number shenanigans
-vim.o.termguicolors = true
-vim.opt.termguicolors = true
-vim.opt.number = true
-vim.opt.relativenumber = true
-vim.cmd [[
-  highlight LineNr guifg=#444444
-]]
-
-vim.o.laststatus = 0
-vim.opt.clipboard = "unnamedplus"
-
----- Does good indenting with tab
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "*",
 	callback = function()
@@ -202,7 +189,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = {"cpp", "c", "h", "cuda"},
+	pattern = { "cpp", "c", "h", "cuda" },
 	callback = function()
 		vim.opt_local.expandtab = true
 		vim.opt_local.tabstop = 2
@@ -210,6 +197,22 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.opt_local.softtabstop = 2
 	end
 })
+
+----------------------------------------------------------------------------------
+
+vim.cmd("colorscheme evergarden")
+
+-- Toggle these for line number shenanigans
+vim.o.termguicolors = true
+vim.opt.termguicolors = true
+vim.opt.number = true
+--vim.opt.relativenumber = true
+vim.cmd [[
+  highlight LineNr guifg=#444444
+]]
+
+vim.o.laststatus = 0
+vim.opt.clipboard = "unnamedplus"
 
 ---- Disable automatic comment continuation on newline
 vim.api.nvim_create_autocmd("FileType", {
