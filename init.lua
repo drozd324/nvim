@@ -83,6 +83,14 @@ require("lazy").setup({
 		},
 
 		{
+			'stevearc/oil.nvim',
+			---@module 'oil'
+			---@type oil.SetupOpts
+			opts = {},
+			lazy = false,
+		},
+
+		{
 			"sphamba/smear-cursor.nvim",
 			opts = {
 				stiffess = .99,
@@ -153,8 +161,7 @@ vim.api.nvim_create_autocmd('lspattach', {
 		vim.keymap.set("n", "<leader>vws", vim.lsp.buf.workspace_symbol, opts)
 		vim.keymap.set("n", "<leader>fd", function() vim.diagnostic.open_float({ border = "single" }) end, opts)
 		vim.keymap.set("n", "<leader>td", function() toggle_buffer_disgnostics() end, opts)
-		vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format({ async = true }) end,
-			{ buffer = bufnr, desc = "Format file" })
+		-- vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format({ async = true }) end, { buffer = bufnr, desc = "Format file" })
 		vim.keymap.set("n", "[d", vim.diagnostic.goto_next, opts)
 		vim.keymap.set("n", "]d", vim.diagnostic.goto_prev, opts)
 		vim.keymap.set({ 'n', 'v' }, "<leader>ca", vim.lsp.buf.code_action, opts)
@@ -195,9 +202,9 @@ vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' 
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
 
 -- Lsp
-vim.keymap.set('n', '<leader>rf', builtin.lsp_references, {desc = "Telescope show lsp refs"})
-vim.keymap.set('n', '<leader>tds', builtin.lsp_document_symbols, {desc = "Telescope show document symbols"})
-vim.keymap.set('n', '<leader>tws', builtin.lsp_workspace_symbols, {desc = "Telescope show workspace symbols"})
+vim.keymap.set('n', '<leader>rf', builtin.lsp_references, { desc = "Telescope show lsp refs" })
+vim.keymap.set('n', '<leader>tds', builtin.lsp_document_symbols, { desc = "Telescope show document symbols" })
+vim.keymap.set('n', '<leader>tws', builtin.lsp_workspace_symbols, { desc = "Telescope show workspace symbols" })
 
 ----------------------------------------------------------------------------------
 
