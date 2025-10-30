@@ -18,7 +18,7 @@ vim.opt.rtp:prepend(lazypath)
 -- Make sure to setup `mapleader` and `maplocalleader` before
 -- loading lazy.nvim so that mappings are correct.
 -- This is also a good place to setup other settings (vim.opt)
-vim.g.mapleader = "\\"
+vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
 ------------------------------------- Setup lazy.nvim ------------------------------------
@@ -61,12 +61,12 @@ require("lazy").setup({
 				})
 			end
 		},
-		--
-		--{
-		--	"mason-org/mason.nvim",
-		--	opts = {}
-		--},
-		--
+		
+		{
+			"mason-org/mason.nvim",
+			opts = {}
+		},
+		
 		{
 			'nvim-telescope/telescope.nvim',
 			tag = '0.1.8',
@@ -128,6 +128,18 @@ vim.lsp.config["clangd"] = {
 }
 vim.lsp.enable('clangd')
 
+-- Easy switching bewteen source and header (.h and .cpp) files
+vim.keymap.set("n", "<leader>h", function()
+  vim.lsp.buf_request(0, "textDocument/switchSourceHeader",
+    { uri = vim.uri_from_bufnr(0) },
+    function(_, result)
+      if result then
+        vim.cmd("edit " .. vim.uri_to_fname(result))
+      else
+        vim.notify("No corresponding header/source found", vim.log.levels.INFO)
+      end
+    end)
+end, { desc = "Switch between source/header" })
 
 vim.lsp.config["bash-language-server"] = {
 	cmd = { 'bash-language-server', '--stdio' },
@@ -161,7 +173,8 @@ vim.api.nvim_create_autocmd('lspattach', {
 		vim.keymap.set("n", "<leader>vws", vim.lsp.buf.workspace_symbol, opts)
 		vim.keymap.set("n", "<leader>fd", function() vim.diagnostic.open_float({ border = "single" }) end, opts)
 		vim.keymap.set("n", "<leader>td", function() toggle_buffer_disgnostics() end, opts)
-		-- vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format({ async = true }) end, { buffer = bufnr, desc = "Format file" })
+--		vim.keymap.set("n", "<leader>lf", function() vim.lsp.buf.format({ async = true }) end)
+--		vim.keymap.set("v", "<leader>lf", function() vim.lsp.buf.format({ async = true }) end)
 		vim.keymap.set("n", "[d", vim.diagnostic.goto_next, opts)
 		vim.keymap.set("n", "]d", vim.diagnostic.goto_prev, opts)
 		vim.keymap.set({ 'n', 'v' }, "<leader>ca", vim.lsp.buf.code_action, opts)
